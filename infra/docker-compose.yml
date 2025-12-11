@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  cyborg-proxy:
+    build: ../cyborg-proxy
+    container_name: cyborg-proxy
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./cyborg-proxy/data:/data
+
+
+  hospital-a:
+    build: ../hospital-agent/hospital_a
+    container_name: hospital-a
+    ports:
+      - '8101:8100'
+    environment:
+      - HOSPITAL_NAME=HospitalA
+      - KEY_PATH=/keys/hospital_a.key
+    volumes:
+      - ./hospital-agent/hospital_a/keys:/keys
+      - ./examples:/examples
+
+
+  hospital-b:
+    build: ../hospital-agent/hospital_b
+    container_name: hospital-b
+    ports:
+      - '8201:8100'
+    environment:
+      - HOSPITAL_NAME=HospitalB
+      - KEY_PATH=/keys/hospital_b.key
+    volumes:
+      - ./hospital-agent/hospital_b/keys:/keys
+      - ./examples:/examples
+
+
+  reranker:
+    build: ../reranker
+    container_name: reranker
+    ports:
+      - '8300:8300'
+
+
+  clinician-ui:
+    build: ../clinician-ui
+    container_name: clinician-ui
+    ports:
+      - '3000:3000'
+
+
+networks:
+  default:
+      driver: bridge
