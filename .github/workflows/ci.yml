@@ -1,0 +1,50 @@
+name: Clinical Exchange CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install \
+            pytest \
+            requests \
+            python-jose \
+            sentence-transformers \
+            cryptography \
+            numpy
+
+      # 🔐 Privacy experiment (judge-critical)
+      - name: Run privacy leakage test
+        run: |
+          python3 tests/privacy/embedding_leakage_test.py > privacy_output.txt
+
+      # ⚡ Benchmarks (synthetic, no services needed)
+      - name: Run benchmark test
+        run: |
+          python3 benchmarks/run_benchmarks.py > benchmark_output.txt
+
+      # 📦 Upload artifacts
+      - name: Upload CI artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-results
+          path: |
+            privacy_output.txt
+            benchmark_output.txt

@@ -1,0 +1,25 @@
+name: Security Scans
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  bandit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install bandit
+        run: pip install bandit
+      - name: Run bandit
+        run: bandit -r hospital-agent cyborg-proxy reranker -ll
+
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aquasecurity/trivy-action@0.20.0
+        with:
+          scan-type: fs
+          path: .
+          severity: HIGH,CRITICAL

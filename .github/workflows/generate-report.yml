@@ -1,0 +1,36 @@
+name: Generate Evaluation Report
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install \
+            sentence-transformers \
+            cryptography \
+            numpy \
+            python-jose
+
+      - name: Generate Results.md
+        run: |
+          python3 tools/generate_results.py
+
+      - name: Commit Results.md
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "ci: auto-update Results.md"
+          file_pattern: docs/Results.md
