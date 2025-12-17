@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 // ----------------------------------
-// Helper: decode JWT payload (DEV)
+// Helper: decode JWT payload (UI only)
 // ----------------------------------
 function parseJwtPayload(token) {
   try {
@@ -37,14 +37,14 @@ export default function Login({ onToken }) {
   }, []);
 
   // ----------------------------------
-  // Decode JWT live when typing
+  // Decode JWT live
   // ----------------------------------
   useEffect(() => {
     setDecoded(parseJwtPayload(token));
   }, [token]);
 
   // ----------------------------------
-  // Helpers
+  // Validation
   // ----------------------------------
   const isExpired =
     decoded?.exp && decoded.exp * 1000 < Date.now();
@@ -55,7 +55,7 @@ export default function Login({ onToken }) {
   // ----------------------------------
   // Actions
   // ----------------------------------
-  function handleSetToken() {
+  function handleLogin() {
     if (!isValid) {
       setMessage("❌ Invalid or expired token");
       onToken("");
@@ -63,13 +63,14 @@ export default function Login({ onToken }) {
     }
 
     onToken(token);
-    setMessage("✅ Token applied successfully");
+    setMessage("✅ Logged in successfully");
   }
 
   function handleClear() {
     setToken("");
     setDecoded(null);
     onToken("");
+    sessionStorage.removeItem("jwt");
     setMessage("🔄 Token cleared");
   }
 
@@ -77,29 +78,71 @@ export default function Login({ onToken }) {
   // UI
   // ----------------------------------
   return (
-    <div style={{ marginBottom: 14 }}>
+    <div
+      style={{
+        maxWidth: 520,
+        padding: 20,
+        borderRadius: 10,
+        border: "1px solid #ddd",
+        background: "#fff",
+        marginBottom: 24,
+      }}
+    >
+      <h3 style={{ marginBottom: 12 }}>
+        🔐 Clinician Login
+      </h3>
+
       <input
-        style={{ width: 520 }}
-        placeholder="Paste JWT token here (dev)"
+        style={{
+          width: "100%",
+          padding: "10px 12px",
+          borderRadius: 6,
+          border: "1px solid #ccc",
+          marginBottom: 10,
+        }}
+        placeholder="Paste JWT token here"
         value={token}
         onChange={(e) => setToken(e.target.value)}
       />
 
-      <button
-        style={{ marginLeft: 8 }}
-        onClick={handleSetToken}
-        disabled={!token}
-      >
-        Set Token
-      </button>
+      <div style={{ display: "flex", gap: 8 }}>
+        <button
+          onClick={handleLogin}
+          disabled={!token}
+          style={{
+            padding: "8px 14px",
+            borderRadius: 6,
+            border: "none",
+            background: "#2563eb",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          Login
+        </button>
 
-      <button style={{ marginLeft: 8 }} onClick={handleClear}>
-        Clear
-      </button>
+        <button
+          onClick={handleClear}
+          style={{
+            padding: "8px 14px",
+            borderRadius: 6,
+            border: "1px solid #ccc",
+            background: "#f5f5f5",
+            cursor: "pointer",
+          }}
+        >
+          Clear
+        </button>
+      </div>
 
       {/* Status Message */}
       {message && (
-        <div style={{ marginTop: 8, color: isValid ? "green" : "#d93025" }}>
+        <div
+          style={{
+            marginTop: 10,
+            color: isValid ? "green" : "#d93025",
+          }}
+        >
           {message}
         </div>
       )}
@@ -108,11 +151,11 @@ export default function Login({ onToken }) {
       {decoded && (
         <div
           style={{
-            marginTop: 10,
-            padding: 8,
-            background: "#f5f5f5",
+            marginTop: 14,
+            padding: 10,
+            background: "#f9fafb",
             borderRadius: 6,
-            width: 520,
+            fontSize: 14,
           }}
         >
           <b>Decoded Token</b>
@@ -129,6 +172,10 @@ export default function Login({ onToken }) {
           )}
         </div>
       )}
+
+      <div style={{ marginTop: 10, fontSize: 12, color: "#666" }}>
+        Token is stored locally and never sent anywhere except secured API calls.
+      </div>
     </div>
   );
 }
