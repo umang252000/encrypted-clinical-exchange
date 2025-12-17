@@ -1,1 +1,1 @@
-# encrypted-clinical-exchange
+# Encrypted Clinical Exchange — Prototype

@@ -1,54 +1,119 @@
-version: '3.8'
+version: "3.9"
+
 services:
+
+  # ---------------------------------------------------------
+  # CYBORGDB MOCK (Encrypted Vector Backend)
+  # ---------------------------------------------------------
+  cyborgdb:
+    build: ../cyborgdb-mock
+    container_name: cyborgdb
+    ports:
+      - "7700:7700"
+    volumes:
+      - ../cyborgdb-mock/data:/data
+    networks:
+      - ecc-net
+
+
+  # ---------------------------------------------------------
+  # CYBORG PROXY (AUTH + AUDIT + ENCRYPTED DATA PLANE)
+  # ---------------------------------------------------------
   cyborg-proxy:
     build: ../cyborg-proxy
     container_name: cyborg-proxy
     ports:
-      - '8000:8000'
+      - "8000:8000"
+    environment:
+      - JWT_SECRET=dev-secret-change-me
+      - CYBORGDB_URL=http://cyborgdb:7700
     volumes:
-      - ./cyborg-proxy/data:/data
+      - ../cyborg-proxy/data:/data   # still used for audit.log
+    depends_on:
+      - cyborgdb
+    networks:
+      - ecc-net
 
 
+  # ---------------------------------------------------------
+  # HOSPITAL A
+  # ---------------------------------------------------------
   hospital-a:
     build: ../hospital-agent/hospital_a
     container_name: hospital-a
     ports:
-      - '8101:8100'
+      - "8101:8100"
     environment:
-      - HOSPITAL_NAME=HospitalA
-      - KEY_PATH=/keys/hospital_a.key
+      HOSPITAL_NAME: HospitalA
+      KEY_MODE: "kms"
+      FILE_KEY_PATH: /keys/hospital_a.key
+      KMS_KEY_PATH: /keys_kms/hospital_a.key
+      CYBORG_PROXY_URL: http://cyborg-proxy:8000
+      HOSPITAL_API_TOKEN: dev-hospital-admin-token
     volumes:
-      - ./hospital-agent/hospital_a/keys:/keys
-      - ./examples:/examples
+      - ../hospital-agent/hospital_a/keys:/keys
+      - ../kms_keys/hospital_a.key:/keys_kms/hospital_a.key
+      - ../examples:/examples
+    depends_on:
+      - cyborg-proxy
+    networks:
+      - ecc-net
 
 
+  # ---------------------------------------------------------
+  # HOSPITAL B
+  # ---------------------------------------------------------
   hospital-b:
     build: ../hospital-agent/hospital_b
     container_name: hospital-b
     ports:
-      - '8201:8100'
+      - "8201:8100"
     environment:
-      - HOSPITAL_NAME=HospitalB
-      - KEY_PATH=/keys/hospital_b.key
+      HOSPITAL_NAME: HospitalB
+      KEY_MODE: "kms"
+      FILE_KEY_PATH: /keys/hospital_b.key
+      KMS_KEY_PATH: /keys_kms/hospital_b.key
+      CYBORG_PROXY_URL: http://cyborg-proxy:8000
+      HOSPITAL_API_TOKEN: dev-hospital-admin-token
     volumes:
-      - ./hospital-agent/hospital_b/keys:/keys
-      - ./examples:/examples
+      - ../hospital-agent/hospital_b/keys:/keys
+      - ../kms_keys/hospital_b.key:/keys_kms/hospital_b.key
+      - ../examples:/examples
+    depends_on:
+      - cyborg-proxy
+    networks:
+      - ecc-net
 
 
+  # ---------------------------------------------------------
+  # RERANKER (CLINICIAN-ONLY)
+  # ---------------------------------------------------------
   reranker:
     build: ../reranker
     container_name: reranker
     ports:
-      - '8300:8300'
+      - "8300:8300"
+    environment:
+      - JWT_SECRET=dev-secret-change-me
+    networks:
+      - ecc-net
 
 
+  # ---------------------------------------------------------
+  # CLINICIAN UI
+  # ---------------------------------------------------------
   clinician-ui:
     build: ../clinician-ui
     container_name: clinician-ui
     ports:
-      - '3000:3000'
+      - "3000:3000"
+    networks:
+      - ecc-net
 
 
+# ---------------------------------------------------------
+# NETWORK
+# ---------------------------------------------------------
 networks:
-  default:
-      driver: bridge
+  ecc-net:
+    driver: bridge
