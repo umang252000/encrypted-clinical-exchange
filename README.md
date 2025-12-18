@@ -376,6 +376,8 @@ We demonstrate a production-grade, encrypted-in-use clinical knowledge exchange 
 
 The architecture enforces zero-trust principles, client-side decryption, strict RBAC, and auditability — making it suitable for regulated healthcare environments.
 
+
+
 <img width="1408" height="768" alt="Gemini_Generated_Image_sm3zqwsm3zqwsm3z" src="https://github.com/user-attachments/assets/bb5d91ad-9912-45c0-a13b-a619420524d8" />
 
 
