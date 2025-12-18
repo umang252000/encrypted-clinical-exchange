@@ -72,11 +72,11 @@ Components
 
 ┌────────────────┐
 
-│  Hospital A    │
+│  Hospital A      │
 
-│  Agent         │
+│  Agent           │
 
-│  AES-256 Key A │
+│  AES-256 Key A   │
 
 └───────┬────────┘
 
@@ -86,9 +86,9 @@ Components
 
 │  Hospital B    │
 
-│  Agent         │
+│  Agent         │      
 
-│  AES-256 Key B │
+│  AES-256 Key B │      
 
 └───────┬────────┘
 
