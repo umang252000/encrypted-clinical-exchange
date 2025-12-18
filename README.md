@@ -43,6 +43,9 @@ Non-compliant	HIPAA-aligned by design
 
 We demonstrate that AI retrieval can work without ever exposing embeddings.
 
+<img width="1408" height="768" alt="Gemini_Generated_Image_xe1ifqxe1ifqxe1i" src="https://github.com/user-attachments/assets/01bbfac0-8ceb-44f7-9a50-01d63644575f" />
+
+
 System Architecture
 
 Hospital A ──┐
@@ -372,6 +375,9 @@ This system never exposes them.
 We demonstrate a production-grade, encrypted-in-use clinical knowledge exchange where AI retrieval is possible without ever exposing patient data, embeddings, or hospital keys.
 
 The architecture enforces zero-trust principles, client-side decryption, strict RBAC, and auditability — making it suitable for regulated healthcare environments.
+
+<img width="1408" height="768" alt="Gemini_Generated_Image_sm3zqwsm3zqwsm3z" src="https://github.com/user-attachments/assets/bb5d91ad-9912-45c0-a13b-a619420524d8" />
+
 
 Security Model
 
