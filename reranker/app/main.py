@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 from typing import List
+from fastapi.middleware.cors import CORSMiddleware
 
 # Shared auth (single source of truth)
 from .auth import verify_jwt, require_roles, TokenData
@@ -25,6 +26,17 @@ This service performs **local reranking** over encrypted clinical case reference
 Designed for enterprise & healthcare compliance demos.
 """,
     version="1.0.0",
+)
+
+# -------------------------------------------------
+# CORS (required for React UI)
+# -------------------------------------------------
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],   # dev only
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # -------------------------------------------------------
