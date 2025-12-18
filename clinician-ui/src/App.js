@@ -175,29 +175,72 @@ function LegacyClinicianApp() {
 }
 
 // ===============================
-// ✅ FINAL APP (TOKEN GATE ADDED)
+// ✅ FINAL APP (WITH NEW RETURN CODE)
 // ===============================
 export default function App() {
   const token = localStorage.getItem("jwt");
 
-  // ⛔ NO TOKEN → SIMPLE JWT PASTE SCREEN
-  if (!token) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
-        <input
-          placeholder="Paste JWT and press Enter"
-          className="border px-3 py-2 rounded shadow"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              localStorage.setItem("jwt", e.target.value);
-              window.location.reload();
-            }
-          }}
-        />
-      </div>
-    );
-  }
+  // Logic to handle the token from the Login component
+  const applyToken = (newToken) => {
+    if (newToken) {
+      localStorage.setItem("jwt", newToken);
+      window.location.reload();
+    }
+  };
 
+<<<<<<< HEAD
   // ✅ TOKEN PRESENT → NEW POLISHED DASHBOARD
   return <Dashboard />;
 }
+=======
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f1f5f9",
+        display: "flex",
+        alignItems: token ? "flex-start" : "center",
+        justifyContent: token ? "flex-start" : "center",
+        padding: token ? 24 : 0,
+      }}
+    >
+      {/* ================= LOGIN STATE ================= */}
+      {!token && (
+        <div
+          style={{
+            background: "#fff",
+            padding: 32,
+            borderRadius: 10,
+            boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+            width: 600,
+          }}
+        >
+          <h2 style={{ marginBottom: 20, textAlign: "center" }}>
+            🔐 Clinician Login
+          </h2>
+
+          <Login onToken={applyToken} />
+
+          <div
+            style={{
+              marginTop: 16,
+              color: "#666",
+              textAlign: "center",
+              fontSize: 14,
+            }}
+          >
+            Paste a valid JWT to access the encrypted clinical federation
+          </div>
+        </div>
+      )}
+
+      {/* ================= DASHBOARD STATE ================= */}
+      {token && (
+        <div style={{ width: "100%" }}>
+          <Dashboard />
+        </div>
+      )}
+    </div>
+  );
+}
+>>>>>>> 2391d102 (first commit)
