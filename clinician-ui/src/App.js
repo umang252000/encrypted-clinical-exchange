@@ -13,9 +13,7 @@ import Dashboard from "./pages/Dashboard";
 // CONFIG — Proxy URL
 // ===============================
 const PROXY_BASE =
-  window.location.hostname.includes("github.dev")
-    ? "https://fuzzy-adventure-5g77j7g7j5wrf4r75-8000.app.github.dev"
-    : "http://localhost:8000";
+  process.env.REACT_APP_PROXY_URL || "http://localhost:8000";
 
 // ===============================
 //   Crypto Helpers (UNCHANGED)
