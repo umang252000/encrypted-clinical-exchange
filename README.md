@@ -1,5 +1,7 @@
 Encrypted Multi-Hospital Clinical Knowledge Exchange
 
+<img width="1536" height="1024" alt="ChatGPT Image Dec 18, 2025, 04_30_51 PM" src="https://github.com/user-attachments/assets/a16b4f21-0194-4091-87a6-ba05b2c1e5bf" />
+
 Privacy-Preserving AI Retrieval with Encrypted-in-Use Vectors
 
 This Project Have
